@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '2.7.2'
+    id 'io.spring.dependency-management' version '1.0.12.RELEASE'
+}
+
+group 'com.machinalny'
+version '0.0.1'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation project(':machinalny-spring-boot-autoconfigure')
+    implementation project(':machinalny-spring-boot-out-of-order-page')
+}
+
+test {
+    useJUnitPlatform()
+}

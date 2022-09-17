@@ -1,0 +1,5 @@
+rootProject.name = 'machinalny-spring-boot-starter-out-of-order-page'
+include 'machinalny-spring-boot-starter'
+include 'machinalny-spring-boot-autoconfigure'
+include 'machinalny-spring-boot-out-of-order-page'
+
