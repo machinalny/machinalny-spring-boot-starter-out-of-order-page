@@ -2,16 +2,25 @@ package com.machinalny.autoconfigure;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConfigurationProperties("machinalny")
+@ConfigurationProperties("spring.machinalny")
 public class MachinalnyOutOfOrderPageProperties {
 
-    private String outOfOrderMessage;
+    private boolean enabled;
+    private String message;
 
-    public String getOutOfOrderMessage() {
-        return outOfOrderMessage;
+    public String getMessage() {
+        return message;
     }
 
-    public void setOutOfOrderMessage(String outOfOrderMessage) {
-        this.outOfOrderMessage = outOfOrderMessage;
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 }

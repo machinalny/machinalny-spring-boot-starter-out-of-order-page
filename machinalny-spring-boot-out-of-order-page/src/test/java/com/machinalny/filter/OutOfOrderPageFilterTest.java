@@ -16,7 +16,7 @@ class OutOfOrderPageFilterTest {
 
 
     @Test
-    void outOfOrderPageTest() throws ServletException, IOException {
+    void outOfOrderPageDefaultTest() throws ServletException, IOException {
         MockHttpServletRequest req = new MockHttpServletRequest();
         MockHttpServletResponse res = new MockHttpServletResponse();
         MockFilterChain chain = new MockFilterChain();

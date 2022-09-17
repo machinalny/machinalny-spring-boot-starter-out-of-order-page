@@ -1,58 +1,61 @@
 package com.machinalny.filter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.web.filter.GenericFilterBean;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.nio.file.Path;
 
-import static java.util.Objects.nonNull;
 
-
-public class OutOfOrderPageFilter implements Filter {
-
-    private static final Logger LOG = LoggerFactory.getLogger(OutOfOrderPageFilter.class);
+public class OutOfOrderPageFilter extends GenericFilterBean {
 
     private String outOfOrderMessage = "Page is currently out of order";
-    private String outOfOrderFilePath;
+    private Path pathToReturnContent;
     private boolean doReturnPage = false;
 
     public OutOfOrderPageFilter() {
         this.outOfOrderMessage = "Service is currently out of order";
     }
 
-    public OutOfOrderPageFilter(String outOfOrderMessage, String outOfOrderFilePath) {
-
-        LOG.info("Filter was initialised");
-
-        if (nonNull(outOfOrderFilePath)) {
-            this.outOfOrderFilePath = outOfOrderFilePath;
-            this.doReturnPage = true;
-        } else if (nonNull(outOfOrderMessage)) {
-            this.outOfOrderMessage = outOfOrderMessage;
-        }
+    public OutOfOrderPageFilter(String outOfOrderMessage) {
+        this.outOfOrderMessage = outOfOrderMessage;
     }
 
-    @Override
-    public void init(FilterConfig filterConfig) {
+    public OutOfOrderPageFilter(Path pathToReturnContent) {
+        this.pathToReturnContent = pathToReturnContent;
+        this.doReturnPage = true;
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        LOG.info("doFilter is invoked");
-        if (doReturnPage){
+        logger.info("doFilter is invoked");
+        if (doReturnPage) {
             chain.doFilter(request, response);
         } else {
             HttpServletResponse res = (HttpServletResponse) response;
             res.sendError(503, this.outOfOrderMessage);
         }
-        LOG.info("doFilter is ended");
+        logger.info("doFilter is ended");
 
     }
 
     @Override
     public void destroy() {
+    }
+
+    public String getOutOfOrderMessage() {
+        return outOfOrderMessage;
+    }
+
+    public Path getPathToReturnContent() {
+        return pathToReturnContent;
+    }
+
+    public boolean isDoReturnPage() {
+        return doReturnPage;
     }
 }
