@@ -3,59 +3,41 @@ package com.machinalny.filter;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.io.InputStream;
 
 
 public class OutOfOrderPageFilter extends GenericFilterBean {
 
-    private String outOfOrderMessage = "Page is currently out of order";
-    private Path pathToReturnContent;
-    private boolean doReturnPage = false;
+    private String maintenancePageFilePath = "/static/out_of_order_page.html";
 
     public OutOfOrderPageFilter() {
-        this.outOfOrderMessage = "Service is currently out of order";
     }
 
-    public OutOfOrderPageFilter(String outOfOrderMessage) {
-        this.outOfOrderMessage = outOfOrderMessage;
-    }
-
-    public OutOfOrderPageFilter(Path pathToReturnContent) {
-        this.pathToReturnContent = pathToReturnContent;
-        this.doReturnPage = true;
+    public OutOfOrderPageFilter(String maintenancePageFilePath) {
+        this.maintenancePageFilePath = maintenancePageFilePath;
     }
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException {
         logger.info("doFilter is invoked");
-        if (doReturnPage) {
-            chain.doFilter(request, response);
-        } else {
+        try (InputStream returnPageContent = getClass().getResourceAsStream(maintenancePageFilePath)) {
             HttpServletResponse res = (HttpServletResponse) response;
-            res.sendError(503, this.outOfOrderMessage);
+            res.getOutputStream().write(returnPageContent.readAllBytes());
+            logger.info("doFilter is ended");
+            res.getOutputStream().flush();
+        } catch (IOException ignored) {
         }
-        logger.info("doFilter is ended");
-
     }
 
     @Override
     public void destroy() {
     }
 
-    public String getOutOfOrderMessage() {
-        return outOfOrderMessage;
-    }
-
-    public Path getPathToReturnContent() {
-        return pathToReturnContent;
-    }
-
-    public boolean isDoReturnPage() {
-        return doReturnPage;
+    public String getMaintenancePageFilePath() {
+        return maintenancePageFilePath;
     }
 }

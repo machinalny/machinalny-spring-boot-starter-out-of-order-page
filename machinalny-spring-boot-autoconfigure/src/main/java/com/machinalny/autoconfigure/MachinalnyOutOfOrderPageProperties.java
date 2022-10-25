@@ -6,14 +6,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class MachinalnyOutOfOrderPageProperties {
 
     private boolean enabled;
-    private String message;
+    private String pathToReturnPage;
 
-    public String getMessage() {
-        return message;
+    public String getPathToReturnPage() {
+        return pathToReturnPage;
     }
 
-    public void setMessage(String message) {
-        this.message = message;
+    public void setPathToReturnPage(String pathToReturnPage) {
+        this.pathToReturnPage = pathToReturnPage;
     }
 
     public boolean isEnabled() {

@@ -15,11 +15,20 @@ class MachinalnyOutOfOrderPageAutoConfigurationTest {
 
 
     @Test
-    void outOfOrderFilterIsPresent() {
+    void outOfOrderFilterIsNotPresentByDefault() {
         final WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(WebMvcAutoConfiguration.class,
                         MachinalnyOutOfOrderPageAutoConfiguration.class));
-        contextRunner.run((context) -> assertThat(context).hasSingleBean(OutOfOrderPageFilter.class));
+        contextRunner.run((context) -> assertThat(context).doesNotHaveBean(OutOfOrderPageFilter.class));
+    }
+
+    @Test
+    void outOfOrderFilterIsPresentWhenEnabled() {
+        final WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
+                .withConfiguration(AutoConfigurations.of(WebMvcAutoConfiguration.class,
+                        MachinalnyOutOfOrderPageAutoConfiguration.class));
+        contextRunner.withPropertyValues("spring.machinalny.enabled=true")
+                .run((context) -> assertThat(context).hasSingleBean(OutOfOrderPageFilter.class));
     }
 
     @Test
@@ -56,10 +65,10 @@ class MachinalnyOutOfOrderPageAutoConfigurationTest {
         final WebApplicationContextRunner contextRunner = new WebApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(WebMvcAutoConfiguration.class,
                         MachinalnyOutOfOrderPageAutoConfiguration.class));
-        contextRunner.withPropertyValues("spring.machinalny.message=OutOfOrder")
+        contextRunner.withPropertyValues("spring.machinalny.pathToReturnPage=/static/outOfOrderPage.html", "spring.machinalny.enabled=true")
                 .run((context) -> {
                     assertThat(context).hasSingleBean(OutOfOrderPageFilter.class);
-                    assertThat(context.getBean(OutOfOrderPageFilter.class).getOutOfOrderMessage()).isEqualTo("OutOfOrder");
+                    assertThat(context.getBean(OutOfOrderPageFilter.class).getMaintenancePageFilePath()).isEqualTo("/static/outOfOrderPage.html");
                 });
     }
 
